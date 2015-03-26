@@ -67,6 +67,7 @@
 			width : 950px;
 			margin : 0px auto;
 			padding : 15px;
+			cursor : pointer;
 		}
 		.blogTitle {
 			margin-top : 10px;
@@ -97,35 +98,37 @@
 				</ul>
 			</div>
 		</div>
+<?php 
+	require_once dirname ( __FILE__ ) . '/SQLHelper.class.php';
+	$sqlHelper = new SQLHelper();
+	$sql = "select * from blog limit 0,2";
+	$blogs = $sqlHelper->execute_dql_array($sql);
+?>
 		<div class="blog">
 			<ul>
 				<div style="height : 30px;"></div>
-				<li>
-					<div class="blogTitle">狗狗的故事</div>
-					<div class="blogArticle">有一天，我在路上遇到一只小狗。就用声问：“小汪，你怎么在这，你的主人呢？”“汪汪，我被主人赶出来了，我的主人是小明。”小狗好像说。我好奇地继续又问：“那你主人为什么把你赶出门呢？”小狗愁眉苦脸地回答道：“我跟小明看电视，我们看到公益广告，那个汽车排气管排出烟雾全是灰色，把屏幕弄得全灰色，我也不懂就随便大叫，小明叫我别吵，但我还叫着，小明一脚把我给踹到门外，我只好在街上走来走去，哎！”我叹了口气说：“你也够可怜的，哦！我觉得你也叫得对……</div>
+				<?php 
+					foreach ($blogs as $blog) {
+				?>
+				<li class="blogLi" id="<?php echo $blog['id'];?>">
+					<div class="blogTitle"><?php echo $blog['title'];?></div>
+					<div class="blogArticle">
+					<?php echo $blog['short_content'];?></div>
 				</li>
 				<div style="height : 30px;"></div>
-				<li>
-					<div class="blogTitle">狗狗的故事</div>
-					<div class="blogArticle">有一天，我在路上遇到一只小狗。就用声问：“小汪，你怎么在这，你的主人呢？”“汪汪，我被主人赶出来了，我的主人是小明。”小狗好像说。我好奇地继续又问：“那你主人为什么把你赶出门呢？”小狗愁眉苦脸地回答道：“我跟小明看电视，我们看到公益广告，那个汽车排气管排出烟雾全是灰色，把屏幕弄得全灰色，我也不懂就随便大叫，小明叫我别吵，但我还叫着，小明一脚把我给踹到门外，我只好在街上走来走去，哎！”我叹了口气说：“你也够可怜的，哦！我觉得你也叫得对……</div>
-				</li>
-				<div style="height : 30px;"></div>
-				<li>
-					<div class="blogTitle">狗狗的故事</div>
-					<div class="blogArticle">有一天，我在路上遇到一只小狗。就用声问：“小汪，你怎么在这，你的主人呢？”“汪汪，我被主人赶出来了，我的主人是小明。”小狗好像说。我好奇地继续又问：“那你主人为什么把你赶出门呢？”小狗愁眉苦脸地回答道：“我跟小明看电视，我们看到公益广告，那个汽车排气管排出烟雾全是灰色，把屏幕弄得全灰色，我也不懂就随便大叫，小明叫我别吵，但我还叫着，小明一脚把我给踹到门外，我只好在街上走来走去，哎！”我叹了口气说：“你也够可怜的，哦！我觉得你也叫得对……</div>
-				</li>
-				<div style="height : 30px;"></div>
-				<li>
-					<div class="blogTitle">狗狗的故事</div>
-					<div class="blogArticle">有一天，我在路上遇到一只小狗。就用声问：“小汪，你怎么在这，你的主人呢？”“汪汪，我被主人赶出来了，我的主人是小明。”小狗好像说。我好奇地继续又问：“那你主人为什么把你赶出门呢？”小狗愁眉苦脸地回答道：“我跟小明看电视，我们看到公益广告，那个汽车排气管排出烟雾全是灰色，把屏幕弄得全灰色，我也不懂就随便大叫，小明叫我别吵，但我还叫着，小明一脚把我给踹到门外，我只好在街上走来走去，哎！”我叹了口气说：“你也够可怜的，哦！我觉得你也叫得对……</div>
-				</li>
-				<div style="height : 30px;"></div>
-				<li>
-					<div class="blogTitle">狗狗的故事</div>
-					<div class="blogArticle">有一天，我在路上遇到一只小狗。就用声问：“小汪，你怎么在这，你的主人呢？”“汪汪，我被主人赶出来了，我的主人是小明。”小狗好像说。我好奇地继续又问：“那你主人为什么把你赶出门呢？”小狗愁眉苦脸地回答道：“我跟小明看电视，我们看到公益广告，那个汽车排气管排出烟雾全是灰色，把屏幕弄得全灰色，我也不懂就随便大叫，小明叫我别吵，但我还叫着，小明一脚把我给踹到门外，我只好在街上走来走去，哎！”我叹了口气说：“你也够可怜的，哦！我觉得你也叫得对……</div>
-				</li>
-				<div style="height : 30px;"></div>
+				<?php 
+					}
+				?>
 			</ul>
 		</div>
+		<script>
+			var blogLis = document.querySelectorAll(".blogLi");
+			for (index in blogLis) {
+				blogLis[index].onclick = function() {
+					var id = this.getAttribute("id");
+					window.location.href = "blog_detail.php?blogId="+id;
+				}
+			}
+		</script>
 	</div>
 </body>

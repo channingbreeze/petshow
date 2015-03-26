@@ -124,81 +124,54 @@
 				</ul>
 			</div>
 		</div>
+<?php 
+	require_once dirname ( __FILE__ ) . '/SQLHelper.class.php';
+	$sqlHelper = new SQLHelper();
+	// 选出前四个pic_title
+	$sql = "select * from pic_title limit 0,4";
+	$picTitles = $sqlHelper->execute_dql_array($sql);
+?>
 		<div class="picDiv">
 			<ul class="picUl">
+				<?php 
+					foreach ($picTitles as $picTitle) {
+				?>
 				<li class="picLi">
-					<div class="picTitle">喵喵和狗狗</div>
+					<div class="picTitle"><?php echo $picTitle['title'];?></div>
 					<ul>
-						<li><img src="images/pics/pic1.jpg" /></li>
-						<li><img src="images/pics/pic2.jpg" /></li>
-						<li><img src="images/pics/pic3.jpg" /></li>
-						<li><img src="images/pics/pic4.jpg" /></li>
-						<li><img src="images/pics/pic5.jpg" /></li>
-						<li><img src="images/pics/pic6.jpg" /></li>
-						<li><img src="images/pics/pic7.jpg" /></li>
-						<li><img src="images/pics/pic8.jpg" /></li>
-						<li><img src="images/pics/pic9.jpg" /></li>
+						<?php 
+							$sql = "select * from picture where title_id=" . $picTitle['id'] . " order by id desc limit 0,9";
+							$pictures = $sqlHelper->execute_dql_array($sql);
+							foreach($pictures as $picture) {
+						?>
+						<li><img src="<?php echo $picture['path'];?>" /></li>
+						<?php 
+							}
+						?>
 					</ul>
 				</li>
-				<li class="picLi">
-					<div class="picTitle">喵喵和狗狗</div>
-					<ul>
-						<li><img src="images/pics/pic1.jpg" /></li>
-						<li><img src="images/pics/pic2.jpg" /></li>
-						<li><img src="images/pics/pic3.jpg" /></li>
-						<li><img src="images/pics/pic4.jpg" /></li>
-						<li><img src="images/pics/pic5.jpg" /></li>
-						<li><img src="images/pics/pic6.jpg" /></li>
-						<li><img src="images/pics/pic7.jpg" /></li>
-						<li><img src="images/pics/pic8.jpg" /></li>
-						<li><img src="images/pics/pic9.jpg" /></li>
-					</ul>
-				</li>
-				<li class="picLi">
-					<div class="picTitle">喵喵和狗狗</div>
-					<ul>
-						<li><img src="images/pics/pic1.jpg" /></li>
-						<li><img src="images/pics/pic2.jpg" /></li>
-						<li><img src="images/pics/pic3.jpg" /></li>
-						<li><img src="images/pics/pic4.jpg" /></li>
-						<li><img src="images/pics/pic5.jpg" /></li>
-						<li><img src="images/pics/pic6.jpg" /></li>
-						<li><img src="images/pics/pic7.jpg" /></li>
-						<li><img src="images/pics/pic8.jpg" /></li>
-						<li><img src="images/pics/pic9.jpg" /></li>
-					</ul>
-				</li>
-				<li class="picLi">
-					<div class="picTitle">喵喵和狗狗</div>
-					<ul>
-						<li><img src="images/pics/pic1.jpg" /></li>
-						<li><img src="images/pics/pic2.jpg" /></li>
-						<li><img src="images/pics/pic3.jpg" /></li>
-						<li><img src="images/pics/pic4.jpg" /></li>
-						<li><img src="images/pics/pic5.jpg" /></li>
-						<li><img src="images/pics/pic6.jpg" /></li>
-						<li><img src="images/pics/pic7.jpg" /></li>
-						<li><img src="images/pics/pic8.jpg" /></li>
-						<li><img src="images/pics/pic9.jpg" /></li>
-					</ul>
-				</li>
+				<?php
+					}
+				?>
 			</ul>
 			<div style="clear : both; height : 10px;"></div>
 		</div>
 		<div class="blogDiv">
 			<ul class="blogUl">
+			<?php 
+				$sql = "select * from blog order by id desc limit 0,2";
+				$blogs = $sqlHelper->execute_dql_array($sql);
+				foreach ($blogs as $blog) {
+			?>
 				<li class="blogLi">
-					<div class="blogTitle">狗狗到我家</div>
+					<div class="blogTitle"><?php echo $blog['title'];?></div>
 					<div class="blogArticle">
-					有一天，我在路上遇到一只小狗。就用声问：“小汪，你怎么在这，你的主人呢？”“汪汪，我被主人赶出来了，我的主人是小明。”小狗好像说。我好奇地继续又问：“那你主人为什么把你赶出门呢？”小狗愁眉苦脸地回答道：“我跟小明看电视，我们看到公益广告，那个汽车排气管排出烟雾全是灰色，把屏幕弄得全灰色，我也不懂就随便大叫，小明叫我别吵，但我还叫着，小明一脚把我给踹到门外，我只好在街上走来走去，哎！”我叹了口气说：“你也够可怜的，哦！我觉得你也叫得对……
+					<?php echo $blog['short_content'];?>
 					</div>
 				</li>
-				<li class="blogLi">
-					<div class="blogTitle">狗狗到我家</div>
-					<div class="blogArticle">
-					有一天，我在路上遇到一只小狗。就用声问：“小汪，你怎么在这，你的主人呢？”“汪汪，我被主人赶出来了，我的主人是小明。”小狗好像说。我好奇地继续又问：“那你主人为什么把你赶出门呢？”小狗愁眉苦脸地回答道：“我跟小明看电视，我们看到公益广告，那个汽车排气管排出烟雾全是灰色，把屏幕弄得全灰色，我也不懂就随便大叫，小明叫我别吵，但我还叫着，小明一脚把我给踹到门外，我只好在街上走来走去，哎！”我叹了口气说：“你也够可怜的，哦！我觉得你也叫得对……
-					</div>
-				</li>
+			<?php 
+				}
+			?>
 			</ul>
 		</div>
 	</div>

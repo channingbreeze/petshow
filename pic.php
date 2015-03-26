@@ -81,6 +81,7 @@
 			list-style-type : none;
 			float : left;
 			margin : 25px;
+			cursor : pointer;
 		}
 		.grayDiv {
 			position : absolute;
@@ -103,6 +104,7 @@
 			top : 300px;
 			width ：100%;
 			margin-left : 50%;
+			cursor : pointer;
 		}
 		.leftButton {
 			left : -320px;
@@ -134,67 +136,100 @@
 				</ul>
 			</div>
 		</div>
+<?php 
+	require_once dirname ( __FILE__ ) . '/SQLHelper.class.php';
+	$sqlHelper = new SQLHelper();
+	$sql = "select * from pic_title";
+	$picTitles = $sqlHelper->execute_dql_array($sql);
+?>
+		<script>
+			var titles = {};
+		</script>
 		<div class="picDiv">
 			<ul class="picUl">
 				<div style="height : 30px;"></div>
+				<?php 
+					foreach ($picTitles as $picTitle) {
+				?>
+				<script>
+					var pics = new Array();
+				</script>
 				<li class="picLi">
-					<div class="picTitle">喵喵和狗狗</div>
+					<div class="picTitle"><?php echo $picTitle['title'];?></div>
 					<ul>
-						<li><img src="images/pics/pic1.jpg" /></li>
-						<li><img src="images/pics/pic2.jpg" /></li>
-						<li><img src="images/pics/pic3.jpg" /></li>
-						<li><img src="images/pics/pic4.jpg" /></li>
-						<li><img src="images/pics/pic5.jpg" /></li>
-						<li><img src="images/pics/pic6.jpg" /></li>
-						<li><img src="images/pics/pic7.jpg" /></li>
-						<li><img src="images/pics/pic8.jpg" /></li>
-						<li><img src="images/pics/pic9.jpg" /></li>
+						<?php 
+							$sql = "select * from picture where title_id=" . $picTitle['id'] . " limit 0,9";
+							$pictures = $sqlHelper->execute_dql_array($sql);
+							foreach($pictures as $index => $picture) {
+						?>
+						<li class="imgLi" pid="<?php echo $picTitle['id'];?>" id="<?php echo $index;?>"><img src="<?php echo $picture['path'];?>" width="100px" height="100px" /></li>
+						<script>
+							pics[<?php echo $index;?>] = "<?php echo $picture['path'];?>";
+						</script>
+						<?php 
+							}
+						?>
 					</ul>
 					<div style="clear : both;"></div>
 				</li>
 				<div style="height : 30px;"></div>
-				<li class="picLi">
-					<div class="picTitle">喵喵和狗狗</div>
-					<ul>
-						<li><img src="images/pics/pic1.jpg" /></li>
-						<li><img src="images/pics/pic2.jpg" /></li>
-						<li><img src="images/pics/pic3.jpg" /></li>
-						<li><img src="images/pics/pic4.jpg" /></li>
-						<li><img src="images/pics/pic5.jpg" /></li>
-						<li><img src="images/pics/pic6.jpg" /></li>
-						<li><img src="images/pics/pic7.jpg" /></li>
-						<li><img src="images/pics/pic8.jpg" /></li>
-						<li><img src="images/pics/pic9.jpg" /></li>
-					</ul>
-					<div style="clear : both;"></div>
-				</li>
-				<div style="height : 30px;"></div>
-				<li class="picLi">
-					<div class="picTitle">喵喵和狗狗</div>
-					<ul>
-						<li><img src="images/pics/pic1.jpg" /></li>
-						<li><img src="images/pics/pic2.jpg" /></li>
-						<li><img src="images/pics/pic3.jpg" /></li>
-						<li><img src="images/pics/pic4.jpg" /></li>
-						<li><img src="images/pics/pic5.jpg" /></li>
-						<li><img src="images/pics/pic6.jpg" /></li>
-						<li><img src="images/pics/pic7.jpg" /></li>
-						<li><img src="images/pics/pic8.jpg" /></li>
-						<li><img src="images/pics/pic9.jpg" /></li>
-					</ul>
-					<div style="clear : both;"></div>
-				</li>
-				<div style="height : 30px;"></div>
+				<script>
+					titles[<?php echo $picTitle['id'];?>] = pics;
+				</script>
+				<?php
+					}
+				?>
 			</ul>
 		</div>
 	</div>
-	<div class="grayDiv" id="grayDiv"></div>
-	<div class="wrapDiv"><img src="images/pics/pic1.jpg" width="500px" height="500px" /></div>
-	<div class="leftButton"><img src="images/left.png" /></div>
-	<div class="rightButton"><img src="images/right.png" /></div>
+	<div id="bigPic">
+		<div class="grayDiv" id="grayDiv"></div>
+		<div class="wrapDiv"><img id="bigImg" width="500px" height="500px" /></div>
+		<div class="leftButton"><img id="leftButton" src="images/left.png" /></div>
+		<div class="rightButton"><img id="rightButton" src="images/right.png" /></div>
+	</div>
 	<script>
+		var curIndex;
+		var curTitleId;
 		setTimeout(function() {
 			document.getElementById("grayDiv").style.height = document.body.scrollHeight + "px";
 		}, 100);
+		document.getElementById("bigPic").style.display = 'none';
+		var showBigImg = function(path) {
+			document.getElementById("bigImg").setAttribute("src", path);
+			if(document.getElementById("bigPic").style.display == 'none') {
+				document.getElementById("bigPic").style.display = 'block';
+			}
+		}
+		var hideBigImg = function() {
+			if(document.getElementById("bigPic").style.display == 'block') {
+				document.getElementById("bigPic").style.display = 'none';
+			}
+		}
+		document.getElementById("bigPic").onclick = function(e) {
+			if(e.target.id == "grayDiv") {
+				hideBigImg();
+			} else if(e.target.id == "leftButton") {
+				curIndex--;
+				if(curIndex < 0) {
+					curIndex = titles[curTitleId].length-1;
+				}
+				showBigImg(titles[curTitleId][curIndex]);
+			} else if(e.target.id == "rightButton") {
+				curIndex++;
+				if(curIndex >= titles[curTitleId].length) {
+					curIndex = 0;
+				}
+				showBigImg(titles[curTitleId][curIndex]);
+			}
+		}
+		var imgLis = document.querySelectorAll(".imgLi");
+		for (index in imgLis) {
+			imgLis[index].onclick = function() {
+				curIndex = this.getAttribute("id");
+				curTitleId = this.getAttribute("pid");
+				showBigImg(titles[curTitleId][curIndex]);
+			};
+		}
 	</script>
 </body>
