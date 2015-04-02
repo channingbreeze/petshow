@@ -158,11 +158,14 @@
 					<div class="picTitle"><?php echo $picTitle['title'];?></div>
 					<ul>
 						<?php 
-							$sql = "select * from picture where title_id=" . $picTitle['id'] . " limit 0,9";
+							$sql = "select * from picture where title_id=" . $picTitle['id']
+							 . " limit 0,9";
 							$pictures = $sqlHelper->execute_dql_array($sql);
 							foreach($pictures as $index => $picture) {
 						?>
-						<li class="imgLi" pid="<?php echo $picTitle['id'];?>" id="<?php echo $index;?>"><img src="<?php echo $picture['path'];?>" width="100px" height="100px" /></li>
+						<li class="imgLi" pid="<?php echo $picTitle['id'];?>"
+						 id="<?php echo $index;?>"><img src="<?php echo $picture['path'];?>"
+						  width="100px" height="100px" /></li>
 						<script>
 							pics[<?php echo $index;?>] = "<?php echo $picture['path'];?>";
 						</script>
@@ -184,7 +187,8 @@
 	</div>
 	<div id="bigPic">
 		<div class="grayDiv" id="grayDiv"></div>
-		<div class="wrapDiv"><img id="bigImg" width="500px" height="500px" /></div>
+		<div class="wrapDiv"><img id="bigImg" src="images/pics/pic1.jpg"
+		 width="500px" height="500px" /></div>
 		<div class="leftButton"><img id="leftButton" src="images/left.png" /></div>
 		<div class="rightButton"><img id="rightButton" src="images/right.png" /></div>
 	</div>

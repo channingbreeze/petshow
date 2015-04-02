@@ -5,11 +5,12 @@
 		$article = "<p>";
 		$article = $article . str_replace("\n", "</p><p>", $_POST['article']);
 		$article = $article . "</p>";
-		$short = substr($_POST['article'], 0, 100);
+		$short = mb_substr($_POST['article'], 0, 100, 'UTF-8');
 		$short = str_replace("\n", " ", $short);
 		$short = $short . "...";
 		$sqlHelper = new SQLHelper();
-		$sql = "insert into blog (title, short_content, content) values ('" . $title . "', '" . $short . "', '" . $article . "')";
+		$sql = "insert into blog (title, short_content, content) values ('" . $title . "', '" . $short
+		 . "', '" . $article . "')";
 		if(1 == $sqlHelper->execute_dqm($sql)) {
 			echo "true";
 		} else {

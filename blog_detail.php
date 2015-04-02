@@ -71,9 +71,14 @@
 			margin-top : 30px;
 		}
 		.blogArticle p {
-			text-indent : 35px;
+			text-indent : 40px;
 			margin-top : 15px;
 			margin-bottom : 15px;
+			line-height : 30px;
+			font-size : 20px;
+			margin-left : 40px;
+			margin-right : 40px;
+			word-wrap: break-word;
 		}
 	</style>
 </head>

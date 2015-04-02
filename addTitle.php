@@ -5,7 +5,7 @@
 		$sql = "insert into pic_title (title) values ('" . $_POST['newTitle'] . "')";
 		$res = $sqlHelper->execute_dqm($sql);
 		if($res == 1) {
-			echo "true";
+			echo $sqlHelper->getLastInsertedId();
 		} else {
 			echo "false";
 		}

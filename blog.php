@@ -74,6 +74,12 @@
 			color : #2B6BB2;
 			font-size : 50px;
 		}
+		.blogArticle {
+			font-size : 20px;
+			text-indent : 40px;
+			margin-top : 20px;
+			word-wrap: break-word;
+		}
 	</style>
 </head>
 <body>
@@ -101,7 +107,7 @@
 <?php 
 	require_once dirname ( __FILE__ ) . '/SQLHelper.class.php';
 	$sqlHelper = new SQLHelper();
-	$sql = "select * from blog limit 0,2";
+	$sql = "select * from blog";
 	$blogs = $sqlHelper->execute_dql_array($sql);
 ?>
 		<div class="blog">

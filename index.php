@@ -70,6 +70,7 @@
 		.picLi {
 			list-style-type : none;
 			width : 350px;
+			height : 400px;
 			float : left;
 			margin-left : 40px;
 		}
@@ -99,6 +100,11 @@
 		.blogTitle {
 			color : #2B6BB2;
 			font-size : 50px;
+		}
+		.blogArticle {
+			font-size : 20px;
+			text-indent : 40px;
+			margin-top : 20px;
 		}
 	</style>
 </head>
@@ -140,7 +146,8 @@
 					<div class="picTitle"><?php echo $picTitle['title'];?></div>
 					<ul>
 						<?php 
-							$sql = "select * from picture where title_id=" . $picTitle['id'] . " order by id desc limit 0,9";
+							$sql = "select * from picture where title_id=" . $picTitle['id']
+							 . " order by id desc limit 0,9";
 							$pictures = $sqlHelper->execute_dql_array($sql);
 							foreach($pictures as $picture) {
 						?>

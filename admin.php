@@ -173,7 +173,7 @@
 			?>
 			<div class="selectDiv">
 				<div class="loginLine">请登陆</div>
-				<form action="#" method="post">
+				<form action="" method="post">
 					<div class="loginLine">用户名：<input type="text" name="username" /></div>
 					<div class="loginLine">密　码：<input type="password" name="password" /></div>
 					<div class="loginLine"><input type="submit" value="登陆" /></div>
@@ -183,7 +183,7 @@
 				} else {
 			?>
 			<script>
-				var curTitleId = 1;
+				var curTitleId = -1;
 			</script>
 			<div class="selectDiv">
 				<select id="selectPicTitle">
@@ -194,7 +194,8 @@
 					$picTitles = $sqlHelper->execute_dql_array($sql);
 					foreach ($picTitles as $picTitle) {
 				?>
-					<option value="<?php echo $picTitle['id'];?>"><?php echo $picTitle['title'];?></option>
+					<option value="<?php echo $picTitle['id'];?>"><?php echo $picTitle['title'];?>
+					</option>
 				<?php 
 					}
 				?>
@@ -205,13 +206,16 @@
 					<?php if (count($picTitles) > 0) {
 						 echo $picTitles[0]['id'];
 					} else {
-						echo "1";
+						echo "-1";
 					}
 					?>;
 				</script>
 			</div>
+			<?php 
+				if(count($picTitles) > 0) {
+			?>
 			<div class="picDiv">
-				<div class="picTitle">狗狗的故事</div>
+				<div class="picTitle" id="picTitle"><?php echo $picTitles[0]['title'];?></div>
 				<ul class="picUl">
 					<div id="pics">
 					</div>
@@ -220,10 +224,14 @@
 				</ul>
 				<div style="clear : both;"></div>
 			</div>
+			<?php 
+				}
+			?>
 			<div class="blogDiv">
 				<form id="blogForm" action="#" method="post">
 					<input id="blogTitle" type="text" name="title" placeholder="标题"/>
-					<textarea id="blogArticle" name="article" placeholder="正文" cols="100" rows="30"></textarea>
+					<textarea id="blogArticle" name="article" placeholder="正文"
+					 cols="100" rows="30"></textarea>
 					<button id="submitBlog">提交</button>
 				</form>
 			</div>
@@ -233,7 +241,7 @@
 			<script>
 				// 更新图片
 				var selectPic = function(titleId) {
-					var	xhr = new XMLHttpRequest();
+					var xhr = new XMLHttpRequest();
 					xhr.open("POST", "getPics.php", true);
 					xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 					xhr.onreadystatechange = function() {
@@ -242,77 +250,134 @@
 								if(xhr.responseText != "false") {
 									var picJson = JSON.parse(xhr.responseText);
 									var lis = "";
-									for (var i in picJson) {
-										lis += '<li><img src="' + picJson[i].path + '" /></li>';
+									for (var i in picJson.pic) {
+										lis += '<li><img src="' + 
+										picJson.pic[i].path + '" /></li>';
 									}
 									document.getElementById('pics').innerHTML = lis;
+									document.getElementById('picTitle').innerHTML = 
+										picJson.title;
 								}
 							}
 						}
 					};
 					xhr.send("titleId=" + titleId);
 				};
-				// select逻辑
-				var selectPicTitle = document.getElementById("selectPicTitle");
-				selectPic(curTitleId);
-				selectPicTitle.onchange = function() {
-					if(selectPicTitle.value == -1) {
-						var res = window.prompt('请输入新Title：');
-						if(res) {
-							// ajax 添加新Title
-							var	xhr = new XMLHttpRequest();
-							xhr.open("POST", "addTitle.php", true);
-							xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-							xhr.onreadystatechange = function() {
-								if (xhr.readyState == 4) {
-									if (xhr.status == 200) {
-										if(xhr.responseText == "true") {
-											window.location.reload();
+				//刷新option
+				var refreshTitle = function() {
+					var xhr = new XMLHttpRequest();
+					xhr.open("POST", "getTitles.php", true);
+					xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+					xhr.onreadystatechange = function() {
+						if (xhr.readyState == 4) {
+							if (xhr.status == 200) {
+								if(xhr.responseText) {
+									var titlesJson = JSON.parse(xhr.responseText);
+									var options = "";
+									for (var i in titlesJson) {
+										if(i == titlesJson.length -1) {
+											options += '<option value="' + 
+											titlesJson[i].id + '" selected>' 
+											+ titlesJson[i].title +
+											  '</option>';
 										} else {
-											window.alert('添加新Title失败');
+											options += '<option value="' + 
+											titlesJson[i].id + '">' + 
+											titlesJson[i].title + '</option>';
 										}
 									}
+									options += '<option value="-1">添加</option>';
+									document.getElementById('selectPicTitle').innerHTML
+									 = options;
 								}
-							};
-							xhr.send("newTitle=" + res);
+							}
 						}
+					};
+					xhr.send(null);
+				};
+				var addNewTitle = function(reload) {
+					var res = window.prompt('请输入新Title：');
+					if(res) {
+						// ajax 添加新Title
+						var	xhr = new XMLHttpRequest();
+						xhr.open("POST", "addTitle.php", true);
+						xhr.setRequestHeader("Content-Type",
+								"application/x-www-form-urlencoded");
+						xhr.onreadystatechange = function() {
+							if (xhr.readyState == 4) {
+								if (xhr.status == 200) {
+									if(xhr.responseText != "false") {
+										curTitleId = xhr.responseText;
+										if(reload) {
+											window.location.reload();
+										} else {
+											selectPic(curTitleId);
+											refreshTitle();
+										}
+									} else {
+										window.alert('添加新Title失败');
+									}
+								}
+							}
+						};
+						xhr.send("newTitle=" + res);
+					}
+				}
+				// select逻辑
+				var selectPicTitle = document.getElementById("selectPicTitle");
+				if(curTitleId != -1) {
+					selectPic(curTitleId);
+				}
+				selectPicTitle.onchange = function() {
+					if(selectPicTitle.value == -1) {
+						addNewTitle();
 					} else {
 						curTitleId = selectPicTitle.value;
 						selectPic(curTitleId);
 					}
 				};
+				selectPicTitle.onclick = function() {
+					if(selectPicTitle.length == 1) {
+						addNewTitle(true);
+					}
+				}
 				// 添加图片逻辑
-				document.getElementById("addPic").onclick = function() {
-					document.getElementById("uploadPic").click();
+				if(document.getElementById("addPic")) {
+					document.getElementById("addPic").onclick = function() {
+						document.getElementById("uploadPic").click();
+					}
 				}
 				// 上传逻辑
-				document.getElementById('uploadPic').onchange = function() {
-			        var fd = new FormData();
-			        fd.append(this.name, this.files[0]);
-			        var xhr = new XMLHttpRequest();
-			        xhr.open('POST', 'uploadPic.php?titleId=' + curTitleId, true);
-			        xhr.onreadystatechange = function() {
-						if (xhr.readyState == 4) {
-							if (xhr.status == 200) {
-								if(xhr.responseText == "success") {
-									selectPic(curTitleId);
-								} else {
-									window.alert(xhr.responseText);
+				if(document.getElementById('uploadPic')) {
+					document.getElementById('uploadPic').onchange = function() {
+						var fd = new FormData();
+						fd.append(this.name, this.files[0]);
+						var xhr = new XMLHttpRequest();
+						xhr.open('POST', 'uploadPic.php?titleId=' + curTitleId, true);
+						xhr.onreadystatechange = function() {
+							if (xhr.readyState == 4) {
+								if (xhr.status == 200) {
+									if(xhr.responseText == "success") {
+										selectPic(curTitleId);
+									} else {
+										window.alert(xhr.responseText);
+									}
 								}
 							}
-						}
-					};
-		        	xhr.send(fd);
+						};
+						xhr.send(fd);
+					}
 				}
 				// 提交日记
 				document.getElementById('submitBlog').onclick = function(e) {
 					e.preventDefault();
-					var	xhr = new XMLHttpRequest();
+					var xhr = new XMLHttpRequest();
 					xhr.open("POST", "uploadBlog.php", true);
 					xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 					xhr.onreadystatechange = function() {
 						if (xhr.readyState == 4) {
 							if (xhr.status == 200) {
+								console.log(xhr.responseText);
 								if(xhr.responseText == "true") {
 									window.alert("添加成功");
 								} else {

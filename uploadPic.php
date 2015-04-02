@@ -10,7 +10,8 @@
 					$path = "images/pics/" . time() . "_" . rand(1, 10000) . $extension;
 					move_uploaded_file($_FILES["pic"]["tmp_name"], dirname ( __FILE__ ) . "/" . $path);
 					$sqlHelper = new SQLHelper();
-					$sql = "insert into picture (title_id, path) values (" . $_GET['titleId'] . ", '" . $path . "')";
+					$sql = "insert into picture (title_id, path) values (" . $_GET['titleId']
+					 . ", '" . $path . "')";
 					$res = $sqlHelper->execute_dqm($sql);
 					if($res != 1) {
 						echo "database operate error";
