@@ -159,7 +159,7 @@
 			session_start();
 			if(!isset($_SESSION['petuser'])) {
 				if(isset($_POST['username']) && isset($_POST['password'])) {
-					if($_POST['username'] == "admin" && isset($_POST['password']) == "admin") {
+					if($_POST['username'] == "admin" && $_POST['password'] == "admin") {
 						$_SESSION['petuser'] = "admin";
 						$login = true;
 					}
